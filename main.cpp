@@ -114,7 +114,7 @@ int main() {
                     switch (choice) {
                         case 1: {
                             string q;
-                            cout << "Enter search query: "; cin.ignore(); getline(cin, q);
+                            cout << "Enter Book Name: "; cin.ignore(); getline(cin, q);
                             myLibrary.searchBook(q);
                             break;
                         }
@@ -122,12 +122,20 @@ int main() {
                             string isbn;
                             cout << "Enter ISBN to issue: "; cin >> isbn;
                             stuPtr->issueBook(isbn, myLibrary.getBooks());
+                            
+                            //add data to a .dat file 
+                            myLibrary.saveToFile();
+                            cout << "Data saved to system.\n";
                             break;
                         }
                         case 3: {
                             string isbn;
                             cout << "Enter ISBN to return: "; cin >> isbn;
                             stuPtr->returnBook(isbn, myLibrary.getBooks());
+                            
+                            //add data to a .dat file 
+                            myLibrary.saveToFile();
+                            cout << "Data saved to system.\n";
                             break;
                         }
                         case 4:
