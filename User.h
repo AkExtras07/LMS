@@ -7,10 +7,14 @@ class User {
 protected:
     std::string name;
     std::string userId;
+    bool isActive;
 
 public:
     User(std::string n, std::string id); 
     virtual ~User();
+    
+    bool getStatus() const { return isActive; } // Add this
+    void setStatus(bool status) { isActive = status; }
 
     std::string getName() const;
     std::string getUserId() const;

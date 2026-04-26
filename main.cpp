@@ -84,7 +84,7 @@ int main() {
                             cout << "Enter ISBN: "; getline(cin, i);
                             libPtr->addBook(myLibrary.getBooks(), t, a, i);
                             break;
-                        }
+                                }
                         case 2:
                             myLibrary.viewAllMembers();
                             break;
@@ -98,8 +98,12 @@ int main() {
                             cin >> isbn;
                             libPtr->removeBook(myLibrary, isbn);
                             break;
-                               }
-                        case 5: // Changed logout to case 5
+                                }
+                        case 5: {
+                        	libPtr->manageMember(myLibrary);
+							break;
+						}        
+                        case 6: // Changed logout to case 5
                            loggedIn = false;
                            break;
                            default:

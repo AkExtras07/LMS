@@ -136,4 +136,26 @@ void Library::removeBookByISBN(string isbn) {
     }
     cout << "Error: Book with ISBN " << isbn << " not found.\n";
   } 
+  
+void Library::removeMember(string userId) {
+    for (size_t i = 0; i < members.size(); ++i) {
+        if (members[i]->getUserId() == userId) {
+            delete members[i]; 
+            members.erase(members.begin() + i);
+            cout << "Member removed.\n";
+            return;
+        }
+    }
+    cout << "Member not found.\n";
+}
+
+//void Library::toggleMemberStatus(string userId) {
+ //   User* u = findUser(userId);
+ //   if (u) {
+ //       u->setStatus(!u->getStatus());
+ //       cout << "Status updated to: " << (u->getStatus() ? "Active" : "Inactive") << "\n";
+  //  } else {
+ //       cout << "Member not found.\n";
+//    }
+//}  
 	

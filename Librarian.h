@@ -18,8 +18,10 @@ public:
     
     // Inside class Librarian
 void removeBook(Library& lib, std::string isbn);
+
+void addBook(std::vector<Book*>& books, std::string t, std::string a, std::string i);
     
-    void addBook(std::vector<Book*>& books, std::string t, std::string a, std::string i);
+void manageMember(Library& lib);    
     
     
 };

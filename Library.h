@@ -22,6 +22,8 @@ public:
     void searchBook(std::string query);
     void viewAllBooks();
     void viewAllMembers();
+    void removeMember(std::string userId);
+    void toggleMemberStatus(std::string userId);
     
     User* findUser(const std::string& userId);
     std::vector<Book*>& getBooks();
