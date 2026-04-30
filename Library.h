@@ -24,6 +24,10 @@ public:
     void viewAllMembers();
     void removeMember(std::string userId);
     void toggleMemberStatus(std::string userId);
+    // Inside Library.h - Public section
+User* findUser(std::string name, std::string id);
+
+void viewIssuedBooksReport();
     
     User* findUser(const std::string& userId);
     std::vector<Book*>& getBooks();

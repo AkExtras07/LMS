@@ -76,11 +76,15 @@ void Library::viewAllMembers() {
     }
 }
 
-User* Library::findUser(const string& userId) {
+// In Library.cpp - Replace the old function body with this:
+User* Library::findUser(string name, string id) {
     for (size_t i = 0; i < members.size(); ++i) {
-        if (members[i]->getUserId() == userId) return members[i];
+        // Now checks both Name and ID
+        if (members[i]->getName() == name && members[i]->getUserId() == id) {
+            return members[i];
+        }
     }
-    return NULL;
+    return NULL; 
 }
 
 
@@ -147,6 +151,25 @@ void Library::removeMember(string userId) {
         }
     }
     cout << "Member not found.\n";
+}
+
+
+
+void Library::viewIssuedBooksReport() {
+    cout << "\n" << string(75, '=') << "\n";
+    cout << left << setw(30) << "BOOK TITLE" << setw(20) << "ISBN" << "BORROWER NAME\n";
+    cout << string(75, '-') << "\n";
+
+    bool found = false;
+    for (size_t i = 0; i < books.size(); ++i) {
+        if (!books[i]->getAvailability()) { // If Issued
+            cout << left << setw(30) << books[i]->getTitle().substr(0, 29)
+                 << setw(20) << books[i]->getISBN()
+                 << books[i]->getHolder() << "\n";
+            found = true;
+        }
+    }
+    if (!found) cout << "No books are currently issued.\n";
 }
 
 //void Library::toggleMemberStatus(string userId) {

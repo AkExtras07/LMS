@@ -8,17 +8,22 @@ private:
     std::string title;
     std::string author;
     std::string isbn;
+    std::string currentHolder;
     bool available;
     bool isValid;
+    
 
 public:
-    Book(std::string t, std::string a, std::string i, bool avail = true);
+    Book(std::string t, std::string a, std::string i, bool avail = true, std::string holder = "None");
 
     std::string getTitle() const { return title; }
     std::string getAuthor() const { return author; }
     std::string getISBN() const { return isbn; }
     bool getAvailability() const { return available; }
     bool getIsValid() const { return isValid; }
+    
+    std::string getHolder() const { return currentHolder; }
+void setHolder(const std::string& h) { currentHolder = h; }
 
     bool setTitle(const std::string& t);
     bool setAuthor(const std::string& a);

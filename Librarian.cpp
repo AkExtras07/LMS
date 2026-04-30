@@ -11,7 +11,7 @@ Librarian::Librarian(string n, string id, string empId)
 void Librarian::displayMenu() {
     cout << "\n===== LIBRARIAN MENU =====\n"
          << "1. Add Book\n2. View All Members\n3. Save Data\n"
-         << "4. Remove Book\n5. Manage Members\n6. Logout\n" // Added option 4
+         << "4. Remove Book\n5. Manage Members\n6. Issued Books Detail\n7. logout\n" // Added option 4
          << "==========================\n";
 }
 
