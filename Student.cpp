@@ -1,14 +1,12 @@
 #include "Student.h"
-#include "Book.h"      // FIX 1: Must include Book.h to call getISBN, setStatus, etc.
+#include "Database.h"
 #include <iostream>
-#include <sstream>
+#include <mysql.h>
 
 using namespace std;
 
-// Constructor
-Student::Student(string n, string id) : User(n, id), booksIssuedCount(0) {}
+Student::Student(string n, string id) : User(n, id) {}
 
-// Menu display
 void Student::displayMenu() {
     cout << "\n===== STUDENT MENU =====\n"
          << "1. Search Book\n2. Issue Book\n3. Return Book\n"
@@ -16,69 +14,62 @@ void Student::displayMenu() {
          << "========================\n";
 }
 
-// Getters and Setters
-int Student::getBooksIssuedCount() const { return booksIssuedCount; }
-void Student::setBooksIssuedCount(int count) { booksIssuedCount = count; }
-
-// Data persistence
 string Student::serialize() const {
-    stringstream ss;
-    ss << booksIssuedCount;
-    // Note: Ensure name and userId are accessible from User class
-    return "STUDENT|" + getName() + "|" + getUserId() + "|" + ss.str();
+    return "STUDENT|" + getName() + "|" + getUserId();
 }
 
-// Issue Book Logic
-void Student::issueBook(const string& isbn, vector<Book*>& books) {
-    // 1. Check issue limit
-    if (booksIssuedCount >= 3) {
-        cout << "Error: Issue limit reached (Max 3 books).\n";
-        return;
+void Student::issueBook(Database& db, const string& isbn) {
+    string query = "SELECT available FROM books WHERE isbn = '" + isbn + "'";
+    MYSQL_RES* res = db.query(query);
+
+    if (!res) return;
+
+    MYSQL_ROW row = mysql_fetch_row(res);
+
+    if (row && row[0] && atoi(row[0]) == 1) {
+
+        string insertQuery = "INSERT INTO issued_books (user_id, isbn) VALUES ('"
+                             + getUserId() + "', '" + isbn + "')";
+        db.execute(insertQuery);
+
+        string updateQuery = "UPDATE books SET available = 0 WHERE isbn = '" + isbn + "'";
+        db.execute(updateQuery);
+
+        cout << "Book issued successfully.\n";
+    } else {
+        cout << "Book not available.\n";
     }
 
-    for (size_t i = 0; i < books.size(); ++i) {
-        if (books[i]->getISBN() == isbn) {
-            // 2. Check if already issued
-            if (!books[i]->getAvailability()) {
-                cout << "Error: Book is already issued.\n";
-                return;
-            }
-            
-            // 3. Mark as issued and save student name
-            books[i]->setStatus(false);
-            books[i]->setHolder(this->getName()); 
-            
-            booksIssuedCount++;
-            cout << "Successfully Issued: " << books[i]->getTitle() << "\n";
-            return;
-        }
-    }
-    
-    // 4. Fallback
-    cout << "Error: Book with ISBN " << isbn << " not found.\n";
+    mysql_free_result(res);
 }
 
-// Return Book Logic
-void Student::returnBook(const string& isbn, vector<Book*>& books) {
-    for (size_t i = 0; i < books.size(); ++i) {
-        if (books[i]->getISBN() == isbn) {
-            if (!books[i]->getAvailability()) {
-                // Check if THIS student is the one who actually has it
-                if (books[i]->getHolder() == this->getName()) {
-                    books[i]->setStatus(true);
-                    books[i]->setHolder("None");
-                    
-                    if (booksIssuedCount > 0) booksIssuedCount--;
-                    cout << "Returned: " << books[i]->getTitle() << "\n";
-                    return;
-                } else {
-                    cout << "Error: This book was issued to " << books[i]->getHolder() << ", not you.\n";
-                    return;
-                }
-            }
-        }
+void Student::returnBook(Database& db, const string& isbn) {
+    string query = "SELECT * FROM issued_books WHERE isbn = '" + isbn +
+                   "' AND user_id = '" + getUserId() +
+                   "' AND return_date IS NULL";
+
+    MYSQL_RES* res = db.query(query);
+
+    if (!res) return;
+
+    MYSQL_ROW row = mysql_fetch_row(res);
+
+    if (row) {
+
+        string updateIssued = "UPDATE issued_books SET return_date = NOW() WHERE isbn = '"
+                              + isbn + "' AND user_id = '" + getUserId() +
+                              "' AND return_date IS NULL";
+        db.execute(updateIssued);
+
+        string updateBook = "UPDATE books SET available = 1 WHERE isbn = '" + isbn + "'";
+        db.execute(updateBook);
+
+        cout << "Book returned successfully.\n";
+    } else {
+        cout << "Error: You did not issue this book.\n";
     }
-    cout << "Error: Invalid ISBN or book was not issued.\n";
+
+    mysql_free_result(res);
 }
 
 Student::~Student() {}

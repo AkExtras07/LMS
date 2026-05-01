@@ -4,6 +4,11 @@
 #include "User.h"
 #include "Book.h"
 #include <vector>
+#include <string>
+
+using namespace std;
+
+class Database;
 
 class Student : public User {
 private:
@@ -16,8 +21,10 @@ public:
     virtual void displayMenu();
     virtual std::string serialize() const;
 
-    void issueBook(const std::string& isbn, std::vector<Book*>& books);
-    void returnBook(const std::string& isbn, std::vector<Book*>& books);
+void issueBook(Database& db, const string& isbn);
+void returnBook(Database& db, const string& isbn);
+   // void issueBook(const std::string& isbn, std::vector<Book*>& books);
+   // void returnBook(const std::string& isbn, std::vector<Book*>& books);
     int getBooksIssuedCount() const;
     void setBooksIssuedCount(int count);
 };

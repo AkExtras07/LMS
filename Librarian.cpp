@@ -1,87 +1,68 @@
 #include "Librarian.h"
-#include "Library.h"
-#include "student.h"
+#include "./Database.h"
 #include <iostream>
 
 using namespace std;
 
-Librarian::Librarian(string n, string id, string empId) 
+Librarian::Librarian(string n, string id, string empId)
     : User(n, id), employeeId(empId) {}
 
 void Librarian::displayMenu() {
     cout << "\n===== LIBRARIAN MENU =====\n"
-         << "1. Add Book\n2. View All Members\n3. Save Data\n"
-         << "4. Remove Book\n5. Manage Members\n6. Issued Books Detail\n7. logout\n" // Added option 4
+         << "1. Add Book\n2. View All Members\n3. System Info\n"
+         << "4. Remove Book\n5. Manage Members\n6. Issued Books Detail\n7. Logout\n"
          << "==========================\n";
 }
 
 string Librarian::serialize() const {
-    return "LIBRARIAN|" + name + "|" + userId + "|" + employeeId;
+    return "LIBRARIAN|" + getName() + "|" + getUserId() + "|" + employeeId;
 }
 
-void Librarian::addBook(vector<Book*>& books, string t, string a, string i) {
-    books.push_back(new Book(t, a, i));
+void Librarian::addBook(Database& db, string t, string a, string i) {
+    	string query = "INSERT INTO books (title, author, isbn, available) VALUES ('" + t + "', '" + a + "', '" + i + "', 1)";
+        db.execute(query);
+
     cout << "Book added successfully.\n";
-    
-    
 }
 
-void Librarian::removeBook(Library& lib, string isbn) {
-    lib.removeBookByISBN(isbn);
+void Librarian::removeBook(Database& db, string isbn) {
+    string query = "DELETE FROM books WHERE isbn = '" + isbn + "'"; db.execute(query);
+
+    cout << "Book removed successfully.\n";
 }
 
-
-//void Librarian::manageMember(Library& lib) {
-//    int choice;
-//    cout << "1. Add Member\n2. Remove Member\n3. Toggle Status\nChoice: ";
-//    cin >> choice;
-    // Implementation calls lib.addMember, lib.removeMember, or lib.toggleMemberStatus
-//}
-
-void Librarian::manageMember(Library& lib) {
+void Librarian::manageMember(Database& db) {
     int choice;
     cout << "\n--- Member Management ---\n";
-    cout << "1. Add Member\n2. Remove Member\n3. Toggle Status (Active/Inactive)\nChoice: ";
+    cout << "1. Add Member\n2. Remove Member\nChoice: ";
     cin >> choice;
 
     if (choice == 1) {
-        // ADD MEMBER
-        string n, id, type;
-        cin.ignore(1000, '\n'); // Clear the buffer so getline works
+        string name, id, role;
+        cin.ignore(1000, '\n');
         cout << "Enter Name: ";
-        getline(cin, n);
+        getline(cin, name);
         cout << "Enter User ID: ";
         getline(cin, id);
-        cout << "Role (S for Student, L for Librarian): ";
-        cin >> type;
+        cout << "Enter Role (student/librarian): ";
+        getline(cin, role);
 
-        if (type == "S" || type == "s") {
-            lib.addMember(new Student(n, id));
-            cout << "Student account created.\n";
-        } else if (type == "L" || type == "l") {
-            string empId;
-            cout << "Enter Employee ID: ";
-            cin >> empId;
-            lib.addMember(new Librarian(n, id, empId));
-            cout << "Librarian account created.\n";
-        } else {
-            cout << "Invalid role.\n";
-        }
-    } 
+        string query = "INSERT INTO users (name, user_id, role) VALUES ('" 
+               + name + "', '" + id + "', '" + role + "')";
+db.execute(query);
+
+        cout << "Member added successfully.\n";
+    }
     else if (choice == 2) {
-        // REMOVE MEMBER
         string id;
         cout << "Enter User ID to remove: ";
         cin >> id;
-        lib.removeMember(id); // Calls the function we added to Library.cpp
-    } 
-   // else if (choice == 3) {
-   //     // TOGGLE STATUS
-   //     string id;
-   //     cout << "Enter User ID to toggle status: ";
-   //     cin >> id;
-   //     lib.toggleMemberStatus(id); // Calls the function we added to Library.cpp
-   // } 
+
+        string query = "DELETE FROM users WHERE user_id = '" + id + "'";
+db.execute(query);
+
+        cout << "Member removed successfully.\n";
+    }
     else {
         cout << "Invalid choice.\n";
     }
