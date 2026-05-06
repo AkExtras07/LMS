@@ -26,7 +26,7 @@ void clearScreen() {
 
 void showWelcome() {
     cout << "========================================\n";
-    cout << "    LIBRARY MANAGEMENT SYSTEM (v1.0)    \n";
+    cout << "    LIBRARY MANAGEMENT SYSTEM    \n";
     cout << "========================================\n";
 }
 

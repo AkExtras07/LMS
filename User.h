@@ -13,7 +13,7 @@ public:
     User(std::string n, std::string id); 
     virtual ~User();
     
-    bool getStatus() const { return isActive; } // Add this
+    bool getStatus() const { return isActive; } 
     void setStatus(bool status) { isActive = status; }
 
     std::string getName() const;

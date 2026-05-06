@@ -21,10 +21,8 @@ public:
     virtual void displayMenu();
     virtual std::string serialize() const;
 
-void issueBook(Database& db, const string& isbn);
-void returnBook(Database& db, const string& isbn);
-   // void issueBook(const std::string& isbn, std::vector<Book*>& books);
-   // void returnBook(const std::string& isbn, std::vector<Book*>& books);
+    void issueBook(Database& db, const string& isbn);
+    void returnBook(Database& db, const string& isbn);
     int getBooksIssuedCount() const;
     void setBooksIssuedCount(int count);
 };
